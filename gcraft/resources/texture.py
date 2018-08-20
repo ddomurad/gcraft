@@ -3,6 +3,7 @@ from OpenGL.GL import *
 from gcraft.resources.resource import Resource
 from gcraft.resources.shader import Shader
 from gcraft.resources.resource_types import *
+
 import gcraft.utils.state_manager as sm
 
 

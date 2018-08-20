@@ -1,5 +1,5 @@
 import gcraft as gc
-
+from math import sin, cos
 
 class TestRenderer(gc.core.GCraftRenderer):
 
@@ -21,14 +21,18 @@ class TestRenderer(gc.core.GCraftRenderer):
         self.simple_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM, "default_lighting")
         self.simple_lighting_shader.use()
         self.simple_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)
-        self.simple_lighting_shader.set_uniform_3f("light_dir", [0.0, 0.0, -1.0])
+        self.simple_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
 
-        self.normal_map_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM, "default_normal_mapping")
+        normal_mapping_shader = ("./resources/normal_mapping.vs", "./resources/normal_mapping.fs")
+        self.normal_map_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
+                                                                    normal_mapping_shader)
+
         self.normal_map_lighting_shader.use()
         self.normal_map_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)
-        self.normal_map_lighting_shader.set_uniform_3f("light_dir", [0.0, 0.0, -1.0])
+        self.normal_map_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
 
         mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/man/model.ply")
+        # mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/cube.ply")
 
         grid = gc.utils.generate_gird_geometry([100, 100], [100, 100])
         gridMesh = gc.resources.StaticMesh('grid', grid)
@@ -40,11 +44,15 @@ class TestRenderer(gc.core.GCraftRenderer):
 
         self.mesh_object = gc.scene.SimpleMeshObject(mesh, self.simple_lighting_shader)
         self.mesh_object.material.difusse_color = [1.0, 1.0, 1.0, 1.0]
+
         self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/man/Diffuse.jpg"))
         self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/man/Normal.jpg"))
 
+        # self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/b.jpg"))
+        # self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/bn.jpg"))
+
         self.camera = gc.scene.StaticCamera()
-        self.camera.pos = [14, 4, 14]
+        self.camera.pos = [15, 4, 15]
         self.camera.target = [0, 4, 0]
 
         self.camera.update_view()
@@ -56,16 +64,25 @@ class TestRenderer(gc.core.GCraftRenderer):
         gc.glCullFace(gc.GL_BACK)
         gc.glEnable(gc.GL_DEPTH_TEST)
 
+
     def on_render(self):
         gc.glClear(gc.GL_COLOR_BUFFER_BIT | gc.GL_DEPTH_BUFFER_BIT)
 
         self.camera.update_view()
         self.mesh_object.trans.set_rot([3.14 / 2, self.model_rotation, 0])
+        # self.mesh_object.trans.set_rot([3.14 / 2, 0, 0])
 
         self.mesh_object.draw(self.camera)
 
         self.grid_object.draw(self.camera)
         self.swap_buffers()
+
+        # self.normal_map_lighting_shader.use()
+        # self.normal_map_lighting_shader.set_uniform_3f("light_dir", [-cos(self.model_rotation), -1.0, sin(self.model_rotation)])
+        #
+        # self.simple_lighting_shader.use()
+        # self.simple_lighting_shader.set_uniform_3f("light_dir", [-cos(self.model_rotation), -1.0, sin(self.model_rotation)])
+
         self.model_rotation += 0.01
 
     def on_reshape(self, w, h):

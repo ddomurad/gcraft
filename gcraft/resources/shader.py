@@ -32,11 +32,6 @@ class Shader(Resource):
         if uniform != -1:
             glUniformMatrix4fv(uniform, 1, GL_FALSE, mat)
 
-    # def set_uniform_1iv(self, uniform_name, index, val):
-    #     uniform = self.get_uniform(uniform_name)
-    #     if uniform != -1:d
-    #         sm.set_uniform_1iv(self.shader, uniform, index, val)
-
     def set_uniform_1i(self, uniform_name, val):
         uniform = self.get_uniform(uniform_name)
         if uniform != -1:

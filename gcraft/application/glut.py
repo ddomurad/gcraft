@@ -60,7 +60,6 @@ def run(window_size, window_title, renderer: GCraftRenderer):
                 _avg_frame_time = 0
                 _min_frame_time = 1e5
                 _max_frame_time = 0
-
         except:
             print(sys.exc_info())
             glutLeaveMainLoop()

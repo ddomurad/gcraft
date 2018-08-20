@@ -120,7 +120,7 @@ def add_tangents_data(geometry: MeshGeometry):
     # vertex pos offset
     vpo = geometry.get_data_offset("v_pos")
     # vertex uv offset
-    vuo =  geometry.get_data_offset("uv_0")
+    vuo = geometry.get_data_offset("uv_0")
 
     if vuo is None:
         raise ValueError("Vertex tangent calculation not supported without uv coordinates")
@@ -134,20 +134,29 @@ def add_tangents_data(geometry: MeshGeometry):
         v1 = geometry.vertex_data[i1 * vertex_stride: (i1 + 1) * vertex_stride]
         v2 = geometry.vertex_data[i2 * vertex_stride: (i2 + 1) * vertex_stride]
 
-        e1 = v3_sub(v1[vpo:vpo+3], v0[vpo:vpo+3])
-        e2 = v3_sub(v2[vpo:vpo+3], v0[vpo:vpo+3])
+        e1 = v3_sub(v1[0:3], v0[0:3])
+        e2 = v3_sub(v2[0:3], v0[0:3])
 
-        delta_u1 = v1[vuo] - v0[vuo]
-        delta_v1 = v1[vuo + 1] - v0[vuo + 1]
+        # e1 = v3_sub(v1[vpo:vpo + 3], v0[vpo:vpo + 3])
+        # e2 = v3_sub(v2[vpo:vpo + 3], v0[vpo:vpo + 3])
 
-        delta_u2 = v2[vuo] - v0[vuo]
-        delta_v2 = v2[vuo + 1] - v0[vuo + 1]
+        # delta_u1 = v1[vuo] - v0[vuo]
+        # delta_v1 = v1[vuo + 1] - v0[vuo + 1]
+
+        delta_u1 = v1[6] - v0[6]
+        delta_v1 = v1[7] - v0[7]
+
+        # delta_u2 = v2[vuo] - v0[vuo]
+        # delta_v2 = v2[vuo + 1] - v0[vuo + 1]
+
+        delta_u2 = v2[6] - v0[6]
+        delta_v2 = v2[7] - v0[7]
 
         f = 1/(delta_u1*delta_v2 - delta_u2*delta_v1)
 
-        tx = f * (delta_v2 * e1[0] - delta_u1 * e2[0])
-        ty = f * (delta_v2 * e1[1] - delta_u1 * e2[1])
-        tz = f * (delta_v2 * e1[1] - delta_u1 * e2[2])
+        tx = f * (delta_v2 * e1[0] - delta_v1 * e2[0])
+        ty = f * (delta_v2 * e1[1] - delta_v1 * e2[1])
+        tz = f * (delta_v2 * e1[2] - delta_v1 * e2[2])
 
         tangent = [tx, ty, tz]
         v3_add_self(tangent_work_data[i0], tangent)

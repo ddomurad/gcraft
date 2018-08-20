@@ -1,17 +1,16 @@
 from OpenGL.GL import *
-
-from gcraft.resources.resource import Resource
-from gcraft.resources.resource_loader import ResourceLoader
-from gcraft.resources.resource_types import RT_MESH
-from gcraft.resources.mesh import StaticMesh
-from gcraft.utils.geometry_generator import generate_cube_geometry
-from gcraft.utils.mesh_geometry import MeshGeometry
-from gcraft.utils.geometry_generator import add_tangents_data
-
-
 from os import path
 import struct
 import math
+
+from gcraft.resources.resource_types import RT_MESH
+from gcraft.resources.resource_loader import ResourceLoader
+from gcraft.resources.resource import Resource
+from gcraft.resources.mesh import StaticMesh
+
+from gcraft.utils.mesh_geometry import MeshGeometry
+from gcraft.utils.geometry_generator import generate_cube_geometry
+from gcraft.utils.geometry_generator import add_tangents_data
 
 
 class DefaultMeshLoader(ResourceLoader):
@@ -170,6 +169,6 @@ class PlyFileMeshLoader(ResourceLoader):
                 read_index_data(ply_words)
 
             mesh_geometry = MeshGeometry(primitive_type, vertex_data, vertex_metadata, index_data, elements["vertex"]["count"])
-            # remove_indices_from_mesh(mesh_geometry)
+
             add_tangents_data(mesh_geometry)
             return StaticMesh(r_id, mesh_geometry)

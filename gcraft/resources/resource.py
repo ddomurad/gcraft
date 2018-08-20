@@ -1,6 +1,3 @@
-from gcraft.resources.resource_types import *
-
-
 class Resource:
 
     def __init__(self, r_id, r_type):

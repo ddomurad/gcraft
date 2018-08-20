@@ -1,6 +1,7 @@
 from gcraft.resources.resource import Resource
 from gcraft.resources.resource_loader import ResourceLoader
 from gcraft.resources.loaders import DefaultShaderLoader
+from gcraft.resources.loaders import FileShaderLoader
 from gcraft.resources.loaders import DefaultMeshLoader
 from gcraft.resources.loaders import TextureFileLoader
 from gcraft.resources.loaders import StlFileMeshLoader
@@ -11,7 +12,8 @@ class ResourcesManager:
 
     def __init__(self):
         self.resources_types = {}
-        self.resources_loaders = [DefaultShaderLoader(), DefaultMeshLoader(), TextureFileLoader(), StlFileMeshLoader(), PlyFileMeshLoader()]
+        self.resources_loaders = [DefaultShaderLoader(), FileShaderLoader(), DefaultMeshLoader(), TextureFileLoader(),
+                                  StlFileMeshLoader(), PlyFileMeshLoader()]
 
     def push(self, r_id, resource: Resource):
         if resource is None:

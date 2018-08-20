@@ -1,10 +1,10 @@
+from os import path
+from PIL import Image
+
 from gcraft.resources.resource import Resource
 from gcraft.resources.resource_loader import ResourceLoader
 from gcraft.resources.resource_types import RT_TEXTURE
 from gcraft.resources.texture import Texture
-
-from os import path
-from PIL import Image
 
 
 class TextureFileLoader(ResourceLoader):

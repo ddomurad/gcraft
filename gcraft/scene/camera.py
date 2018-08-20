@@ -1,6 +1,5 @@
 from OpenGL.GL import *
 from gcraft.utils.vector_ops import *
-import numpy as np
 
 
 class CameraProjection:
