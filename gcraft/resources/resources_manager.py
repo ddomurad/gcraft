@@ -26,17 +26,23 @@ class ResourcesManager:
 
         return resource
 
-    def get(self, res_type, r_id):
+    def get(self, res_type, r_id, load_params={}):
+        if self.load(res_type, r_id, load_params):
+            return self.resources_types[res_type][r_id]
+        return None
+
+    def load(self, res_type, r_id, load_params={}):
         if res_type in self.resources_types:
             resources = self.resources_types[res_type]
             if r_id in resources:
-                return resources[r_id]
+                return True
 
         loader = self._get_loader(r_id, res_type)
         if loader is None:
-            return None
+            return False
 
-        return self.push(r_id, loader.load(r_id))
+        self.push(r_id, loader.load(r_id, load_params))
+        return True
 
     def _get_loader(self, r_id, res_type) -> ResourceLoader:
         res = list(filter(lambda f: f.can_load(r_id, res_type), self.resources_loaders))

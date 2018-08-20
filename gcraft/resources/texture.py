@@ -17,12 +17,7 @@ class Texture(Resource):
 
         glTexImage2D(GL_TEXTURE_2D, 0, 3, texture_size[0], texture_size[1], 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data)
 
-        glBindTexture(GL_TEXTURE_2D, self.texture_id)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
 
-        glGenerateMipmap(GL_TEXTURE_2D)
-        # glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
 
     def use(self, index, shader: Shader):
         shader.use()

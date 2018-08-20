@@ -6,6 +6,9 @@ class MeshGeometry:
         self.index_data = index_data
         self.vertex_count = vertex_count
 
+    def contains_data(self, data_type):
+        return any([md[0] == data_type for md in self.vertex_metadata])
+
     def get_vertex_stride(self):
         return sum([d[1] for d in self.vertex_metadata])
 

@@ -44,6 +44,12 @@ def v3_mul(v, k):
     return [v[0]*k, v[1]*k, v[2]*k]
 
 
+def v3_div(v, k):
+    if k == 0:
+        k = 0.0000000001
+    return [v[0] / k, v[1] / k, v[2] / k]
+
+
 def v3_rotate(v, axis, angle):
     q = q4_mk_quaternion(axis, angle)
     return v3_transform_quaternion(q, v)

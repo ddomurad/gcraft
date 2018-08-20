@@ -10,7 +10,12 @@ from gcraft.resources.mesh import StaticMesh
 
 from gcraft.utils.mesh_geometry import MeshGeometry
 from gcraft.utils.geometry_generator import generate_cube_geometry
-from gcraft.utils.geometry_generator import add_tangents_data
+from gcraft.utils.mesh_ops import add_normals_data, add_tangents_data
+
+
+def _apply_mesh_ops(geometry: MeshGeometry, ops):
+    for op in ops:
+        op(geometry)
 
 
 class DefaultMeshLoader(ResourceLoader):
@@ -18,7 +23,7 @@ class DefaultMeshLoader(ResourceLoader):
     def can_load(self, r_id, r_type):
         return r_type == RT_MESH and r_id == "default_cube"
 
-    def load(self, r_id) -> Resource:
+    def load(self, r_id, params) -> Resource:
         if r_id == "default_cube":
             return StaticMesh(r_id, generate_cube_geometry([1, 1, 1], [[0, 0], [1, 1]]))
 
@@ -29,7 +34,7 @@ class StlFileMeshLoader(ResourceLoader):
     def can_load(self, r_id, r_type):
         return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".stl") and path.exists(r_id)
 
-    def load(self, r_id) -> Resource:
+    def load(self, r_id, params) -> Resource:
         with open(r_id, 'rb') as stl_file:
             stl_file.seek(80)
             faces_count, = struct.unpack('i', stl_file.read(4))
@@ -67,7 +72,7 @@ class PlyFileMeshLoader(ResourceLoader):
     def can_load(self, r_id, r_type):
         return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".ply") and path.exists(r_id)
 
-    def load(self, r_id) -> Resource:
+    def load(self, r_id, params) -> Resource:
         with open(r_id, "r") as ply_file:
             ply_tag = ply_file.readline().strip()
             ply_format = ply_file.readline().strip()
@@ -170,5 +175,8 @@ class PlyFileMeshLoader(ResourceLoader):
 
             mesh_geometry = MeshGeometry(primitive_type, vertex_data, vertex_metadata, index_data, elements["vertex"]["count"])
 
-            add_tangents_data(mesh_geometry)
+            if "mesh_ops" in params:
+                _apply_mesh_ops(mesh_geometry, params["mesh_ops"])
+
             return StaticMesh(r_id, mesh_geometry)
+

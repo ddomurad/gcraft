@@ -14,7 +14,7 @@ class DefaultShaderLoader(ResourceLoader):
     def can_load(self, r_id, r_type):
         return r_type == RT_SHADER_PROGRAM and (r_id == "default_basic" or r_id == "default_lighting")
 
-    def load(self, r_id) -> Resource:
+    def load(self, r_id, params) -> Resource:
         if r_id == "default_basic":
             return Shader(r_id, """
                     #version 330
@@ -114,7 +114,7 @@ class FileShaderLoader(ResourceLoader):
 
         return True
 
-    def load(self, r_id) -> Resource:
+    def load(self, r_id, params) -> Resource:
         return Shader(r_id,
                       open(r_id[0], 'r').read(),
                       open(r_id[1], 'r').read())

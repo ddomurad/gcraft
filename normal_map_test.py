@@ -1,6 +1,7 @@
 import gcraft as gc
 from math import sin, cos
 
+
 class TestRenderer(gc.core.GCraftRenderer):
 
     def __init__(self):
@@ -31,13 +32,18 @@ class TestRenderer(gc.core.GCraftRenderer):
         self.normal_map_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)
         self.normal_map_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
 
-        mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/man/model.ply")
-        # mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/cube.ply")
+        def fix_uv(v): v[1] = 1-v[1]; return v
+
+        mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/Rock_6_FREE/Rock_6/rock.ply",
+                                         {"mesh_ops": [
+                                             lambda m: gc.utils.mesh_ops.mod_vertex_data(m, "uv_0", 2, fix_uv),
+                                             gc.utils.mesh_ops.add_tangents_data
+                                         ]})
 
         grid = gc.utils.generate_gird_geometry([100, 100], [100, 100])
-        gridMesh = gc.resources.StaticMesh('grid', grid)
+        grid_mesh = gc.resources.StaticMesh('grid', grid)
 
-        self.grid_object = gc.scene.SimpleMeshObject(gridMesh, self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
+        self.grid_object = gc.scene.SimpleMeshObject(grid_mesh, self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
                                                                                          "default_basic"))
 
         self.grid_object.material.difusse_color = [0.3, 0.3, 0.3, 1]
@@ -45,15 +51,24 @@ class TestRenderer(gc.core.GCraftRenderer):
         self.mesh_object = gc.scene.SimpleMeshObject(mesh, self.simple_lighting_shader)
         self.mesh_object.material.difusse_color = [1.0, 1.0, 1.0, 1.0]
 
-        self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/man/Diffuse.jpg"))
-        self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/man/Normal.jpg"))
+        self.mesh_object.textures.append(
+            self.resource_manager.get(gc.resources.RT_TEXTURE,
+                                      "/home/work/Tmp/Rock_6_FREE/Rock_6/Rock_6_Tex/Rock_6_d.png",
+                                      {"mipmaps": True, "filter": "linear"}))
 
-        # self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/b.jpg"))
-        # self.mesh_object.textures.append(self.resource_manager.get(gc.resources.RT_TEXTURE, "/home/work/Tmp/bn.jpg"))
+        self.mesh_object.textures.append(
+            self.resource_manager.get(gc.resources.RT_TEXTURE,
+                                      "/home/work/Tmp/Rock_6_FREE/Rock_6/Rock_6_Tex/Rock_6_n.png",
+                                      {"mipmaps": True, "filter": "linear"}))
+
+        self.mesh_object.textures.append(
+            self.resource_manager.get(gc.resources.RT_TEXTURE,
+                                      "/home/work/Tmp/Rock_6_FREE/Rock_6/Rock_6_Tex/Rock_6_ao.png",
+                                      {"mipmaps": True, "filter": "linear"}))
 
         self.camera = gc.scene.StaticCamera()
-        self.camera.pos = [15, 4, 15]
-        self.camera.target = [0, 4, 0]
+        self.camera.pos = [5, 3, 5]
+        self.camera.target = [0, 0.5, 0]
 
         self.camera.update_view()
 
