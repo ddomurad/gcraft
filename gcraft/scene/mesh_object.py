@@ -25,6 +25,9 @@ class SimpleMeshObject(SceneObject):
         pass
 
     def draw(self, camera: Camera):
+        if not self.mesh or not self.shader:
+            return
+
         self.material.apply(self.shader)
 
         self.shader.set_uniform_matrix_4f("projection_view_matrix",

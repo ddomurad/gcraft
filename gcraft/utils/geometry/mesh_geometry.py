@@ -4,7 +4,7 @@ class MeshGeometry:
         self.vertex_data = vertex_data
         self.vertex_metadata = vertex_metadata
         self.index_data = index_data
-        self.vertex_count = vertex_count
+        self.vertex_count = int(vertex_count)
 
     def contains_data(self, data_type):
         return any([md[0] == data_type for md in self.vertex_metadata])

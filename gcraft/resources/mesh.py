@@ -3,7 +3,7 @@ from OpenGL.GL import *
 from gcraft.resources.resource import Resource
 from gcraft.resources.shader import Shader
 from gcraft.resources.resource_types import *
-from gcraft.utils.mesh_geometry import MeshGeometry
+from gcraft.utils.geometry.mesh_geometry import MeshGeometry
 import gcraft.utils.state_manager as sm
 
 

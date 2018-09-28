@@ -1,6 +1,6 @@
 from functools import reduce
 from OpenGL.GL import *
-from gcraft.utils.mesh_geometry import MeshGeometry
+from gcraft.utils.geometry.mesh_geometry import MeshGeometry
 
 
 class Face:
@@ -62,6 +62,26 @@ def generate_cube_geometry(size, texture_rec):
     return MeshGeometry(GL_TRIANGLES, vertex_data, vertex_metadata, index_data, 6)
 
 
+def generate_cube_frame_geometry(size):
+    sx = size[0] / 2.0
+    sy = size[1] / 2.0
+    sz = size[2] / 2.0
+
+    p0 = [-sx, -sy, -sz]
+    p1 = [sx,  -sy, -sz]
+    p2 = [-sx, sy, -sz]
+    p3 = [sx, sy, -sz]
+    p4 = [-sx, -sy, sz]
+    p5 = [sx, -sy, sz]
+    p6 = [-sx, sy, sz]
+    p7 = [sx, sy, sz]
+
+    vertex_data = [p0, p1, p1, p5, p5, p4, p4, p0, p0, p2, p1, p3, p5, p7, p4, p6, p2, p3, p3, p7, p7, p6, p6, p2]
+    vertex_data = reduce(list.__add__, vertex_data)
+
+    return MeshGeometry(GL_LINES, vertex_data, [("v_pos", 3)], None, len(vertex_data)/3)
+
+
 def generate_gird_geometry(size, segments):
     dx = size[0] / segments[0]
     dz = size[1] / segments[1]
@@ -83,5 +103,4 @@ def generate_gird_geometry(size, segments):
         vertex_data.extend([end_x, 0, start_z + i*dz])
 
     vertex_metadata = [("v_pos", 3)]
-    index_data = [i for i in range(int(len(vertex_data)/3))]
-    return MeshGeometry(GL_LINES, vertex_data, vertex_metadata, index_data, (segments[0] + segments[1])*2)
+    return MeshGeometry(GL_LINES, vertex_data, vertex_metadata, None, (segments[0] + segments[1])*2)

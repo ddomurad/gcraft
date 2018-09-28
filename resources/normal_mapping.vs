@@ -9,7 +9,6 @@ in vec4 v_tangent;
 in vec2 uv_0;
 
 out mat3 f_tbn;
-
 out vec2 fuv_0;
 
 void main()

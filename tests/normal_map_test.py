@@ -1,5 +1,4 @@
 import gcraft as gc
-from math import sin, cos
 
 
 class TestRenderer(gc.core.GCraftRenderer):
@@ -19,12 +18,19 @@ class TestRenderer(gc.core.GCraftRenderer):
     def on_init(self):
         self.resource_manager = gc.resources.ResourcesManager()
 
+        self.camera = gc.scene.StaticCamera()
+        self.camera.pos = [5, 3, 5]
+        self.camera.target = [0, 0.5, 0]
+
+        self.camera.update_view()
+
+
         self.simple_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM, "default_lighting")
         self.simple_lighting_shader.use()
         self.simple_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)
         self.simple_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
 
-        normal_mapping_shader = ("./resources/normal_mapping.vs", "./resources/normal_mapping.fs")
+        normal_mapping_shader = ("../resources/normal_mapping.vs", "../resources/normal_mapping.fs")
         self.normal_map_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
                                                                     normal_mapping_shader)
 
@@ -36,11 +42,11 @@ class TestRenderer(gc.core.GCraftRenderer):
 
         mesh = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/Rock_6_FREE/Rock_6/rock.ply",
                                          {"mesh_ops": [
-                                             lambda m: gc.utils.mesh_ops.mod_vertex_data(m, "uv_0", 2, fix_uv),
-                                             gc.utils.mesh_ops.add_tangents_data
+                                             lambda m: gc.utils.geometry.mesh_ops.mod_vertex_data(m, "uv_0", 2, fix_uv),
+                                             gc.utils.geometry.mesh_ops.add_tangents_data
                                          ]})
 
-        grid = gc.utils.generate_gird_geometry([100, 100], [100, 100])
+        grid = gc.utils.geometry.generate_gird_geometry([100, 100], [100, 100])
         grid_mesh = gc.resources.StaticMesh('grid', grid)
 
         self.grid_object = gc.scene.SimpleMeshObject(grid_mesh, self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
@@ -66,12 +72,6 @@ class TestRenderer(gc.core.GCraftRenderer):
                                       "/home/work/Tmp/Rock_6_FREE/Rock_6/Rock_6_Tex/Rock_6_ao.png",
                                       {"mipmaps": True, "filter": "linear"}))
 
-        self.camera = gc.scene.StaticCamera()
-        self.camera.pos = [5, 3, 5]
-        self.camera.target = [0, 0.5, 0]
-
-        self.camera.update_view()
-
         self.model_rotation = 0
 
         gc.glClearColor(0.1, 0.1, 0.1, 1.0)
@@ -84,6 +84,7 @@ class TestRenderer(gc.core.GCraftRenderer):
         gc.glClear(gc.GL_COLOR_BUFFER_BIT | gc.GL_DEPTH_BUFFER_BIT)
 
         self.camera.update_view()
+
         self.mesh_object.trans.set_rot([3.14 / 2, self.model_rotation, 0])
         # self.mesh_object.trans.set_rot([3.14 / 2, 0, 0])
 
