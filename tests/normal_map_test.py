@@ -24,15 +24,13 @@ class TestRenderer(gc.core.GCraftRenderer):
 
         self.camera.update_view()
 
-
         self.simple_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM, "default_lighting")
         self.simple_lighting_shader.use()
         self.simple_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)
         self.simple_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
 
-        normal_mapping_shader = ("../resources/normal_mapping.vs", "../resources/normal_mapping.fs")
         self.normal_map_lighting_shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
-                                                                    normal_mapping_shader)
+                                                                    "../resources/normal_mapping")
 
         self.normal_map_lighting_shader.use()
         self.normal_map_lighting_shader.set_uniform_1f("ambient_lighting", 0.0)

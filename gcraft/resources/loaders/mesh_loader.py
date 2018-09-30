@@ -4,7 +4,7 @@ import struct
 import math
 
 from gcraft.resources.resource_types import RT_MESH
-from gcraft.resources.resource_loader import ResourceLoader
+from gcraft.resources.resource_loader import ResourceLoader, FileResourceLoader
 from gcraft.resources.resource import Resource
 from gcraft.resources.mesh import StaticMesh
 
@@ -21,26 +21,37 @@ def _apply_mesh_ops(geometry: MeshGeometry, ops):
 
 class DefaultMeshLoader(ResourceLoader):
 
-    def can_load(self, r_id, r_type):
+    def can_load(self, r_id, r_type, params):
         return r_type == RT_MESH and (r_id == "default_cube" or r_id == "default_cube_frame" or r_id == "default_square")
 
-    def load(self, r_id, params) -> Resource:
+    def load(self, r_id, params) -> Resource or None:
         if r_id == "default_cube":
-            return StaticMesh(r_id, generate_cube_geometry([1, 1, 1], [[0, 0], [1, 1]]))
+            mesh_size = params.get("size") or [1, 1, 1]
+            texture_rect = params.get("texture_rect") or [[0, 0], [1, 1]]
+            return StaticMesh(r_id, generate_cube_geometry(mesh_size, texture_rect))
         elif r_id == "default_cube_frame":
-            return StaticMesh(r_id, generate_cube_frame_geometry([1, 1, 1]))
+            mesh_size = params.get("size") or [1, 1, 1]
+            return StaticMesh(r_id, generate_cube_frame_geometry(mesh_size))
         elif r_id == "default_square":
-            return StaticMesh(r_id, generate_square_geometry([0, 0], [1, 1], [[0, 0], [1, 1]]))
+            mesh_offset = params.get("offset") or [0, 0]
+            mesh_size = params.get("size") or [1, 1]
+            texture_rect = params.get("texture_rect") or [[0, 0], [1, 1]]
+
+            return StaticMesh(r_id, generate_square_geometry(mesh_offset, mesh_size, texture_rect))
 
         return None
 
 
-class StlFileMeshLoader(ResourceLoader):
-    def can_load(self, r_id, r_type):
-        return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".stl") and path.exists(r_id)
+class StlFileMeshLoader(FileResourceLoader):
+    def can_load(self, r_id, r_type, params):
+
+        return r_type == RT_MESH and FileResourceLoader.can_load_file(r_id, params, ".stl")
+        # return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".stl") and path.exists(r_id)
 
     def load(self, r_id, params) -> Resource:
-        with open(r_id, 'rb') as stl_file:
+        file_path = FileResourceLoader.get_file_name(r_id, params)
+
+        with open(file_path, 'rb') as stl_file:
             stl_file.seek(80)
             faces_count, = struct.unpack('i', stl_file.read(4))
 
@@ -74,11 +85,13 @@ class StlFileMeshLoader(ResourceLoader):
 
 
 class PlyFileMeshLoader(ResourceLoader):
-    def can_load(self, r_id, r_type):
-        return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".ply") and path.exists(r_id)
+    def can_load(self, r_id, r_type, params):
+        return r_type == RT_MESH and FileResourceLoader.can_load_file(r_id, params, ".ply")
+        # return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".ply") and path.exists(r_id)
 
-    def load(self, r_id, params) -> Resource:
-        with open(r_id, "r") as ply_file:
+    def load(self, r_id, params) -> Resource or None:
+        file_path = FileResourceLoader.get_file_name(r_id, params)
+        with open(file_path, "r") as ply_file:
             ply_tag = ply_file.readline().strip()
             ply_format = ply_file.readline().strip()
 

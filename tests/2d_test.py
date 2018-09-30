@@ -19,11 +19,16 @@ class Test2dRenderer(gc.core.GCraftRenderer):
         self.camera.target = [1, 1]
 
         self.shader = self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM, "default_basic")
-        self.cup_model = self.resource_manager.get(gc.resources.RT_MESH, "/home/work/Tmp/cup.ply")
-        self.object2d = gc.scene.SimpleMeshObject(self.cup_model, self.shader)
+        self.cup_model = self.resource_manager.get(gc.resources.RT_MESH, "cup_model", {"path": "/home/work/Tmp/cup.ply"})
+
+        self.object2d = gc.scene.SimpleMeshObject(
+            self.resource_manager.get(gc.resources.RT_MESH, "cup_model"), self.shader)
+
+        self.resource_manager.load(gc.resources.RT_TEXTURE, "texture_01",
+                                   {"path": "/home/work/Tmp/crate.jpeg", "mipmaps": True})
 
         factory = gc.scene.SceneFactory(self.resource_manager)
-        self.sprite1 = factory.create_sprite_2d("/home/work/Tmp/crate.jpeg")
+        self.sprite1 = factory.create_sprite_2d("texture_01")
 
         gc.glDisable(gc.GL_CULL_FACE)
         gc.glClearColor(0.1, 0.1, 0.1, 1.0)

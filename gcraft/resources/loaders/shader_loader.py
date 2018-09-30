@@ -2,7 +2,7 @@ from os import path
 
 from gcraft.resources.resource import Resource
 from gcraft.resources.shader import Shader
-from gcraft.resources.resource_loader import ResourceLoader
+from gcraft.resources.resource_loader import ResourceLoader, FileResourceLoader
 from gcraft.resources.resource_types import RT_SHADER_PROGRAM
 
 
@@ -11,7 +11,7 @@ class DefaultShaderLoader(ResourceLoader):
     def __init__(self):
         pass
 
-    def can_load(self, r_id, r_type):
+    def can_load(self, r_id, r_type, params):
         return r_type == RT_SHADER_PROGRAM and (r_id == "default_basic" or r_id == "default_lighting")
 
     def load(self, r_id, params) -> Resource:
@@ -99,22 +99,35 @@ class DefaultShaderLoader(ResourceLoader):
         return None
 
 
-class FileShaderLoader(ResourceLoader):
+class FileShaderLoader(FileResourceLoader):
 
     def __init__(self):
         pass
 
-    def can_load(self, r_id, r_type):
-        if r_type != RT_SHADER_PROGRAM or not isinstance(r_id, tuple) or len(r_id) != 2:
-            return False
-        if not r_id[0].endswith(".vs") or not r_id[1].endswith(".fs"):
-            return False
-        if not path.exists(r_id[0]) or not path.exists(r_id[1]):
+    def can_load(self, r_id, r_type, params):
+        if r_type != RT_SHADER_PROGRAM:
             return False
 
-        return True
+        if "paths" in params and len(params["paths"]) == 2:
+            return path.exists(params["paths"][0]) and path.exists(params["paths"][1])
+
+        if not isinstance(r_id, str):
+            return False
+
+        return path.exists(r_id + ".vs") and path.exists(r_id + ".fs")
 
     def load(self, r_id, params) -> Resource:
+        vs_path = ""
+        fs_path = ""
+
+        if "paths" in params:
+            vs_path = next(p for p in params["paths"] if p.endswith(".vs"))
+            fs_path = next(p for p in params["paths"] if p.endswith(".fs"))
+
+        elif isinstance(r_id, str):
+            vs_path = r_id + ".vs"
+            fs_path = r_id + ".fs"
+
         return Shader(r_id,
-                      open(r_id[0], 'r').read(),
-                      open(r_id[1], 'r').read())
+                      open(vs_path, 'r').read(),
+                      open(fs_path, 'r').read())

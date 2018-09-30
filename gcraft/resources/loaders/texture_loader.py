@@ -3,20 +3,19 @@ from PIL import Image
 
 from OpenGL.GL import *
 from gcraft.resources.resource import Resource
-from gcraft.resources.resource_loader import ResourceLoader
+from gcraft.resources.resource_loader import FileResourceLoader
 from gcraft.resources.resource_types import RT_TEXTURE
 from gcraft.resources.texture import Texture
 
 
-class TextureFileLoader(ResourceLoader):
-    def can_load(self, r_id, r_type):
-        return r_type == RT_TEXTURE and path.exists(r_id)
+class TextureFileLoader(FileResourceLoader):
+    def can_load(self, r_id, r_type, params):
+        return r_type == RT_TEXTURE and FileResourceLoader.can_load_file(r_id, params)
 
     def load(self, r_id, params) -> Resource:
-        if not path.exists(r_id):
-            return None
+        file_path = FileResourceLoader.get_file_name(r_id, params)
 
-        image = Image.open(r_id)
+        image = Image.open(file_path)
         image_data = image.tobytes("raw")
 
         texture = Texture(r_id, image.size, image_data)

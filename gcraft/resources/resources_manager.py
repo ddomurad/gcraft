@@ -37,13 +37,13 @@ class ResourcesManager:
             if r_id in resources:
                 return True
 
-        loader = self._get_loader(r_id, res_type)
+        loader = self._get_loader(r_id, res_type, load_params)
         if loader is None:
             return False
 
         self.push(r_id, loader.load(r_id, load_params))
         return True
 
-    def _get_loader(self, r_id, res_type) -> ResourceLoader:
-        res = list(filter(lambda f: f.can_load(r_id, res_type), self.resources_loaders))
+    def _get_loader(self, r_id, res_type, load_params) -> ResourceLoader:
+        res = list(filter(lambda f: f.can_load(r_id, res_type, load_params), self.resources_loaders))
         return res[0] if res else None
