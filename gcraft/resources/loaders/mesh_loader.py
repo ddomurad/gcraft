@@ -11,6 +11,7 @@ from gcraft.resources.mesh import StaticMesh
 from gcraft.utils.geometry.mesh_geometry import MeshGeometry
 from gcraft.utils.geometry.geometry_generator import generate_cube_geometry
 from gcraft.utils.geometry.geometry_generator import generate_cube_frame_geometry
+from gcraft.utils.geometry.geometry_generator import generate_square_geometry
 
 
 def _apply_mesh_ops(geometry: MeshGeometry, ops):
@@ -21,13 +22,15 @@ def _apply_mesh_ops(geometry: MeshGeometry, ops):
 class DefaultMeshLoader(ResourceLoader):
 
     def can_load(self, r_id, r_type):
-        return r_type == RT_MESH and (r_id == "default_cube" or r_id == "default_cube_frame")
+        return r_type == RT_MESH and (r_id == "default_cube" or r_id == "default_cube_frame" or r_id == "default_square")
 
     def load(self, r_id, params) -> Resource:
         if r_id == "default_cube":
             return StaticMesh(r_id, generate_cube_geometry([1, 1, 1], [[0, 0], [1, 1]]))
         elif r_id == "default_cube_frame":
             return StaticMesh(r_id, generate_cube_frame_geometry([1, 1, 1]))
+        elif r_id == "default_square":
+            return StaticMesh(r_id, generate_square_geometry([0, 0], [1, 1], [[0, 0], [1, 1]]))
 
         return None
 

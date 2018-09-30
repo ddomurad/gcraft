@@ -25,7 +25,7 @@ class TestRenderer(gc.core.GCraftRenderer):
     def on_init(self):
         self.resource_manager = gc.resources.ResourcesManager()
 
-        self.camera = gc.scene.FlyingCamera()
+        self.camera = gc.scene.FlyingCamera3d()
         self.camera.pos = [5, 3, 5]
         self.camera.target = [0, 0.5, 0]
 

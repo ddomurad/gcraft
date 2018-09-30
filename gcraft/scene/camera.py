@@ -59,7 +59,7 @@ class Camera:
         self.projection_view_matrix = np.matmul(self.view_matrix, self.projection_matrix)
 
 
-class StaticCamera(Camera):
+class Camera3d(Camera):
     def __init__(self):
         Camera.__init__(self)
         self.pos = [0.0, 0.0, 0.0]
@@ -71,7 +71,18 @@ class StaticCamera(Camera):
         self.look_at(self.pos, self.target, self.up)
 
 
-class FlyingCamera(Camera):
+class Camera2d(Camera):
+    def __init__(self):
+        Camera.__init__(self)
+        self.target = [0.0, 0.0]
+        self.screen_size = [1.0, 1.0]
+        self.dist = 10.0
+
+    def update_view(self):
+        self.look_at(self.target + [self.dist], self.target + [0], (0, 1, 0))
+
+
+class FlyingCamera3d(Camera):
     def __init__(self):
         Camera.__init__(self)
         self.pos = [0.0, 0.0, 0.0]

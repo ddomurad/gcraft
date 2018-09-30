@@ -82,6 +82,18 @@ def generate_cube_frame_geometry(size):
     return MeshGeometry(GL_LINES, vertex_data, [("v_pos", 3)], None, len(vertex_data)/3)
 
 
+def generate_square_geometry(offset, size, texture_rec):
+    p0 = [offset[0], offset[1], 0, texture_rec[0][0], texture_rec[1][1]]
+    p1 = [offset[0] + size[0], offset[1], 0, texture_rec[1][0], texture_rec[1][1]]
+    p2 = [offset[0] + size[0], offset[1] + size[1], 0, texture_rec[1][0], texture_rec[0][1]]
+    p3 = [offset[0], offset[1] + size[1], 0, texture_rec[0][0], texture_rec[0][1]]
+
+    vertex_data = [p0, p1, p2, p3]
+    vertex_data = reduce(list.__add__, vertex_data)
+
+    return MeshGeometry(GL_QUADS, vertex_data, [("v_pos", 3), ("uv_0", 2)], None, 4)
+
+
 def generate_gird_geometry(size, segments):
     dx = size[0] / segments[0]
     dz = size[1] / segments[1]

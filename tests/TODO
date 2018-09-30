@@ -1,0 +1,4 @@
+- Update resource loaders with parameters
+- Decouple resource id from file names
+- Add possibility to customize sprites (texture map, center offset, etc...)
+-
