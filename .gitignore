@@ -1,3 +1,6 @@
 .idea
 venv
+dist
+build
+gcraft.egg-info
 __pycache__
