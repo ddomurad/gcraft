@@ -1,5 +1,5 @@
-from os import path
 from PIL import Image
+import numpy as np
 
 from OpenGL.GL import *
 from gcraft.resources.resource import Resource
@@ -16,9 +16,12 @@ class TextureFileLoader(FileResourceLoader):
         file_path = FileResourceLoader.get_file_name(r_id, params)
 
         image = Image.open(file_path)
-        image_data = image.tobytes("raw")
 
+        image_data = image.tobytes("raw", "RGBA") if 'A' in image.getbands() else image.tobytes("raw", "RGBX")
+
+        print(image.info)
         texture = Texture(r_id, image.size, image_data)
+        image.close()
 
         glBindTexture(GL_TEXTURE_2D, texture.texture_id)
 

@@ -116,7 +116,7 @@ class TestRenderer(gc.core.GCraftRenderer):
         print("fps: {0}, max: {1}[ms], avg: {2}[ms], min: {3}[ms]".format(fps, max_frame_time*1000,
                                                                           avg_frame_time*1000, min_frame_time*1000))
 
-        print("gl cals: {0}".format(gc.utils.state_manager.get_gl_calls()))
+        print("gl cals: {0}".format(gcraft.scene.utils.state_manager.get_gl_calls()))
 
 
 gc.application.glut.run((800,600), "trest", TestRenderer())

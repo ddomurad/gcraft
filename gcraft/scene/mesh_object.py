@@ -4,6 +4,7 @@ from gcraft.scene.scene_object import SceneObject
 from gcraft.scene.scene_object import Camera
 from gcraft.scene.material import Material, BasicMaterial
 from gcraft.scene.transformation import Transformation
+from OpenGL.GL import  GL_ONE, GL_ZERO
 
 import gcraft.utils.state_manager as sm
 
@@ -20,6 +21,7 @@ class SimpleMeshObject(SceneObject):
         self.shader = shader
         self.material = material if material is not None else BasicMaterial()
         self.textures = []
+        self.blend_fnc = (GL_ONE, GL_ZERO)
 
     def update(self, dt):
         pass
@@ -46,4 +48,5 @@ class SimpleMeshObject(SceneObject):
             sm.bind_2d_texture(0)
             self.shader.set_uniform_1i("textures_count", 0)
 
+        sm.set_blend_fnc(self.blend_fnc)
         self.mesh.draw(self.shader)

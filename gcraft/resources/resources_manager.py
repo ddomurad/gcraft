@@ -1,5 +1,6 @@
 from gcraft.resources.resource import Resource
 from gcraft.resources.resource_loader import ResourceLoader
+
 from gcraft.resources.loaders import DefaultShaderLoader
 from gcraft.resources.loaders import FileShaderLoader
 from gcraft.resources.loaders import DefaultMeshLoader

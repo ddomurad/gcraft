@@ -1,5 +1,4 @@
 from tests.cuboid_interpolator import interpolate_cuboid_mesh, generate_vertex_cache, data_to_mesh_type
-from gcraft.utils.vector_ops import v3_add
 from gcraft.utils.geometry.mesh_ops import add_normals_data
 import gcraft as gc
 import math
@@ -129,7 +128,7 @@ class TestRenderer(gc.core.GCraftRenderer):
         print("fps: {0}, max: {1}[ms], avg: {2}[ms], min: {3}[ms]".format(fps, max_frame_time*1000,
                                                                           avg_frame_time*1000, min_frame_time*1000))
 
-        print("gl cals: {0}".format(gc.utils.state_manager.get_gl_calls()))
+        print("gl cals: {0}".format(gcraft.scene.utils.state_manager.get_gl_calls()))
 
 
 gc.application.glut.run((800,600), "trest", TestRenderer())

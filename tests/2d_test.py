@@ -14,6 +14,8 @@ class Test2dRenderer(gc.core.GCraftRenderer):
         self.rotation = 0.5
 
     def on_init(self):
+        gc.core.GCraftRenderer.on_init(self)
+
         self.resource_manager = gc.resources.ResourcesManager()
         self.camera = gc.scene.camera.Camera2d()
         self.camera.target = [1, 1]
@@ -25,12 +27,12 @@ class Test2dRenderer(gc.core.GCraftRenderer):
             self.resource_manager.get(gc.resources.RT_MESH, "cup_model"), self.shader)
 
         self.resource_manager.load(gc.resources.RT_TEXTURE, "texture_01",
-                                   {"path": "/home/work/Tmp/crate.jpeg", "mipmaps": True})
+                                   {"path": "/home/work/Tmp/man.png", "mipmaps": True})
 
         factory = gc.scene.SceneFactory(self.resource_manager)
         self.sprite1 = factory.create_sprite_2d("texture_01")
 
-        gc.glDisable(gc.GL_CULL_FACE)
+        self.sprite1.blend_fnc = gc.utils.constants.ALPHA_BLEND
         gc.glClearColor(0.1, 0.1, 0.1, 1.0)
 
     def on_render(self):
@@ -39,15 +41,12 @@ class Test2dRenderer(gc.core.GCraftRenderer):
         self.camera.update_view()
         self.shader.use()
 
-        # self.shader.set_uniform_4f("difusse_color", [1, 1, 1, 1])
-        # self.shader.set_uniform_matrix_4f("projection_view_matrix",
-        #                                   self.camera.projection_view_matrix)
-
         self.object2d.draw(self.camera)
         self.sprite1.trans.set_rot([0, 0, self.rotation])
         self.sprite1.draw(self.camera)
 
         self.swap_buffers()
+        self.rotation += 0.01
 
     def on_reshape(self, w, h):
         self.camera.apply_window_size((w, h))

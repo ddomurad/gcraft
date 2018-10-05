@@ -1,5 +1,8 @@
+from OpenGL.GL import *
+
 from gcraft.core.input_state import InputState
 from gcraft.core.input_event import InputEvent
+import gcraft.utils.state_manager as sm
 
 
 class GCraftRenderer:
@@ -9,7 +12,8 @@ class GCraftRenderer:
         self.continuous_rendering = True
 
     def on_init(self):
-        pass
+        sm.enable(GL_BLEND)
+        sm.enable(GL_CULL_FACE)
 
     def on_render(self):
         pass

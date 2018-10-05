@@ -1,7 +1,7 @@
 from OpenGL.GLUT import *
 from gcraft.core.renderer import GCraftRenderer
 from gcraft.core.input_event import InputEvent
-import gcraft.utils.state_manager as sm
+
 
 import wx
 from wx import glcanvas

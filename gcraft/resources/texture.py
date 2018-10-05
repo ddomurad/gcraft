@@ -12,12 +12,13 @@ class Texture(Resource):
         Resource.__init__(self, r_id, RT_TEXTURE)
 
         self.texture_id = glGenTextures(1)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4)
+
         glBindTexture(GL_TEXTURE_2D, self.texture_id)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
 
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, texture_size[0], texture_size[1], 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data)
-
-
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_size[0], texture_size[1], 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
 
     def use(self, index, shader: Shader):
         shader.use()
