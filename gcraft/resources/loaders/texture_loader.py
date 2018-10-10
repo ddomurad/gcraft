@@ -19,8 +19,17 @@ class TextureFileLoader(FileResourceLoader):
 
         image_data = image.tobytes("raw", "RGBA") if 'A' in image.getbands() else image.tobytes("raw", "RGBX")
 
-        print(image.info)
-        texture = Texture(r_id, image.size, image_data)
+        texture_id = glGenTextures(1)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4)
+
+        glBindTexture(GL_TEXTURE_2D, texture_id)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size[0], image.size[1], 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                     image_data)
+
+        texture = Texture(r_id, texture_id)
         image.close()
 
         glBindTexture(GL_TEXTURE_2D, texture.texture_id)

@@ -13,6 +13,9 @@ class Test2dRenderer(gc.core.GCraftRenderer):
         self.sprite1 = None
         self.rotation = 0.5
 
+        self.buffer_sprite = None
+        self.test_buffer = None
+
     def on_init(self):
         gc.core.GCraftRenderer.on_init(self)
 
@@ -31,19 +34,32 @@ class Test2dRenderer(gc.core.GCraftRenderer):
 
         factory = gc.scene.SceneFactory(self.resource_manager)
         self.sprite1 = factory.create_sprite_2d("texture_01")
-
         self.sprite1.blend_fnc = gc.utils.constants.ALPHA_BLEND
-        gc.glClearColor(0.1, 0.1, 0.1, 1.0)
 
-    def on_render(self):
+        self.test_buffer = gc.core.RenderBuffer.create((800, 600))
+        self.buffer_sprite = factory.create_sprite_2d(gc.resources.Texture("test_texture", self.test_buffer.texture_id))
+
+        gc.glClearColor(0.1, 0.1, 0.1, 0.0)
+
+    def render(self, sprite):
         gc.glClear(gc.GL_COLOR_BUFFER_BIT | gc.GL_DEPTH_BUFFER_BIT)
 
         self.camera.update_view()
         self.shader.use()
 
         self.object2d.draw(self.camera)
-        self.sprite1.trans.set_rot([0, 0, self.rotation])
-        self.sprite1.draw(self.camera)
+        sprite.trans.set_rot([0, 0, self.rotation])
+        sprite.draw(self.camera)
+
+    def on_render(self):
+
+        self.test_buffer.bind()
+        gc.glClearColor(0.1, 0.1, 0.1, 0.0)
+        self.render(self.sprite1)
+
+        self.test_buffer.bind_screen()
+        gc.glClearColor(0.5, 0.1, 0.1, 0.0)
+        self.render(self.buffer_sprite)
 
         self.swap_buffers()
         self.rotation += 0.01
