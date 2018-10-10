@@ -1,2 +1,2 @@
 import gcraft.application.glut
-from gcraft.application.wx import GCraftCanvas
+import gcraft.application.wx

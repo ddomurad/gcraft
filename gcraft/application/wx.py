@@ -8,14 +8,13 @@ from wx import glcanvas
 
 
 class GCraftCanvas(wx.glcanvas.GLCanvas):
-    def __init__(self, parent, renderer: GCraftRenderer):
+    def __init__(self, parent: wx.Window, renderer: GCraftRenderer):
         wx.glcanvas.GLCanvas.__init__(self, parent, -1)
 
         self._renderer = renderer
         self._renderer.swap_buffers = self.on_swap_buffers
 
         self._renderer_inited = False
-
         self._last_mouse_pos = None
 
         self._context = wx.glcanvas.GLContext(self)
@@ -27,8 +26,6 @@ class GCraftCanvas(wx.glcanvas.GLCanvas):
         self.Bind(wx.EVT_MOUSE_EVENTS, self.on_mouse_event)
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_down_event)
         self.Bind(wx.EVT_KEY_UP, self.on_key_up_event)
-
-        self.Bind(wx.EVT_IDLE, self.on_idle_event)
 
     def init(self):
         glutInit()
@@ -48,9 +45,6 @@ class GCraftCanvas(wx.glcanvas.GLCanvas):
 
     def on_swap_buffers(self):
         self.SwapBuffers()
-
-    def on_idle_event(self, event):
-        self.Refresh(False)
 
     def on_erase_background_event(self, event):
         pass  # Do nothing, to avoid flashing on MSW.
@@ -98,18 +92,40 @@ class GCraftCanvas(wx.glcanvas.GLCanvas):
             self._last_mouse_pos[0] = event.X
             self._last_mouse_pos[1] = event.Y
 
-        self.Refresh(False)
-
     def on_key_down_event(self, event):
         input_event = InputEvent(InputEvent.IE_KEY_DOWN, mouse_x=event.Y, mouse_y=event.Y, key=event.GetKeyCode())
         self._renderer.input_state.update_state(input_event)
         self._renderer.on_input(input_event)
-
-        self.Refresh(False)
 
     def on_key_up_event(self, event):
         input_event = InputEvent(InputEvent.IE_KEY_UP, mouse_x=event.Y, mouse_y=event.Y, key=event.GetKeyCode())
         self._renderer.input_state.update_state(input_event)
         self._renderer.on_input(input_event)
 
-        self.Refresh(False)
+
+class GCraftContinuousRenderer(wx.Timer):
+
+    def __init__(self, canvas: GCraftCanvas):
+        wx.Timer.__init__(self)
+        self.canvas = canvas
+
+    def start(self):
+        wx.Timer.Start(self, 10)
+
+    def stop(self):
+        wx.Timer.Stop(self)
+
+    def Notify(self):
+        self.canvas.Refresh(False)
+
+
+class GCraftContinuousCanvas(GCraftCanvas):
+    def __init__(self, parent: wx.Window, renderer: GCraftRenderer):
+        GCraftCanvas.__init__(self, parent, renderer)
+        self.renderer_timer = GCraftContinuousRenderer(self)
+
+    def start(self):
+        self.renderer_timer.start()
+
+    def stop(self):
+        self.renderer_timer.stop()
