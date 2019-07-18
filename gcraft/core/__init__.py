@@ -1,4 +1,5 @@
-from gcraft.core.renderer import GCraftRenderer
+from gcraft.core.app import GCraftApp, GCraftSceneApp
+from gcraft.core.scene import GCraftScene, GCraftSceneManager
 
 from gcraft.core.render_buffer import RenderBuffer
 from gcraft.core.input_event import InputEvent

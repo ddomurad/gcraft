@@ -1,17 +1,15 @@
 from OpenGL.GLUT import *
-from gcraft.core.renderer import GCraftRenderer
+from gcraft.core.app import GCraftApp
 from gcraft.core.input_event import InputEvent
-
 
 import wx
 from wx import glcanvas
 
-
 class GCraftCanvas(wx.glcanvas.GLCanvas):
-    def __init__(self, parent: wx.Window, renderer: GCraftRenderer):
+    def __init__(self, parent: wx.Window, gc_app: GCraftApp):
         wx.glcanvas.GLCanvas.__init__(self, parent, -1)
 
-        self._renderer = renderer
+        self._renderer = gc_app
         self._renderer.swap_buffers = self.on_swap_buffers
 
         self._renderer_inited = False
@@ -120,8 +118,8 @@ class GCraftContinuousRenderer(wx.Timer):
 
 
 class GCraftContinuousCanvas(GCraftCanvas):
-    def __init__(self, parent: wx.Window, renderer: GCraftRenderer):
-        GCraftCanvas.__init__(self, parent, renderer)
+    def __init__(self, parent: wx.Window, gc_app: GCraftApp):
+        GCraftCanvas.__init__(self, parent, gc_app)
         self.renderer_timer = GCraftContinuousRenderer(self)
 
     def start(self):

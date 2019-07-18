@@ -32,12 +32,8 @@ class SimpleMeshObject(SceneObject):
 
         self.material.apply(self.shader)
 
-        self.shader.set_uniform_matrix_4f("projection_view_matrix",
-                                          np.matmul(self.trans.get_matrix(), camera.projection_view_matrix))
-
-        self.shader.set_uniform_matrix_4f("normal_view_matrix",
-                                          np.matrix.transpose(
-                                              np.linalg.inv(self.trans.get_matrix())))
+        self.shader.set_uniform_matrix_4f("projection_view_matrix", np.matmul(self.trans.get_matrix(), camera.projection_view_matrix))
+        self.shader.set_uniform_matrix_4f("transform_matrix", self.trans.get_matrix())
 
         if self.textures:
             self.shader.set_uniform_1i("textures_count", len(self.textures))

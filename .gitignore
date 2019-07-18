@@ -4,3 +4,4 @@ dist
 build
 gcraft.egg-info
 __pycache__
+.vscode

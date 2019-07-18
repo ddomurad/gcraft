@@ -1,5 +1,6 @@
 from OpenGL.GL import *
 from gcraft.utils.geometry.mesh_geometry import MeshGeometry
+from gcraft.scene.transformation import Transformation
 from gcraft.utils.vector_ops import *
 
 
@@ -105,6 +106,57 @@ def add_tangents_data(geometry: MeshGeometry):
     geometry.vertex_data = new_vertex_data
     geometry.vertex_metadata.append(('v_tangent', 3))
 
+def move_to_cog(geometry: MeshGeometry, select_axis = [1, 1, 1]):
+    cog = [0, 0, 0]
+    
+    vertex_stride = geometry.get_vertex_stride()
+    vpo = geometry.get_data_offset("v_pos")
+
+    for i in range(geometry.vertex_count):
+        v3_add_self(cog, geometry.vertex_data[i * vertex_stride + vpo: i * vertex_stride + vpo + 3])
+    
+    v3_div_self(cog, geometry.vertex_count)
+    
+    for i in range(geometry.vertex_count):
+        if select_axis[0]:
+            geometry.vertex_data[i * vertex_stride + vpo + 0] -= cog[0]
+        if select_axis[1]:
+            geometry.vertex_data[i * vertex_stride + vpo + 1] -= cog[1]
+        if select_axis[2]:
+            geometry.vertex_data[i * vertex_stride + vpo + 2] -= cog[2]
+        
+
+def transform(geometry: MeshGeometry, transformation: Transformation, data_types=['v_pos', 'v_normal']):
+    vertex_stride = geometry.get_vertex_stride()
+    matrix = transformation.get_matrix()
+
+    data_positions = [geometry.get_data_offset(data_type) for data_type in data_types]
+    for i in range(geometry.vertex_count):
+        for data_offset in data_positions:
+            
+            v = geometry.vertex_data[i * vertex_stride + data_offset: i * vertex_stride + data_offset + 3]
+            tv = m4_dot_v3(matrix, v)
+
+            geometry.vertex_data[i * vertex_stride + data_offset + 0] = tv[0]
+            geometry.vertex_data[i * vertex_stride + data_offset + 1] = tv[1]
+            geometry.vertex_data[i * vertex_stride + data_offset + 2] = tv[2]
+
+def normalize_normals(geometry: MeshGeometry): 
+    normalize_data(geometry, ["v_normal"])
+
+def normalize_data(geometry: MeshGeometry, data_types):
+    vertex_stride = geometry.get_vertex_stride()
+    
+    data_positions = [geometry.get_data_offset(data_type) for data_type in data_types]
+    for i in range(geometry.vertex_count):
+        for data_offset in data_positions:
+            v = geometry.vertex_data[i * vertex_stride + data_offset: i * vertex_stride + data_offset + 3]
+            v3_normalize_self(v)
+
+            geometry.vertex_data[i * vertex_stride + data_offset + 0] = v[0]
+            geometry.vertex_data[i * vertex_stride + data_offset + 1] = v[1]
+            geometry.vertex_data[i * vertex_stride + data_offset + 2] = v[2]
+
 
 def add_normals_data(geometry: MeshGeometry):
     if geometry.index_data is None:
@@ -112,9 +164,8 @@ def add_normals_data(geometry: MeshGeometry):
     else:
         _add_normals_data_to_indexed_mesh(geometry)
 
-
 def _add_normals_data_to_indexed_mesh(geometry: MeshGeometry):
-    if "v_normals" in geometry.vertex_metadata:
+    if "v_normal" in geometry.vertex_metadata:
         return
 
     if geometry.index_data is None:
@@ -169,7 +220,7 @@ def _add_normals_data_to_indexed_mesh(geometry: MeshGeometry):
 
 
 def _add_normals_data_non_indexed_mesh(geometry: MeshGeometry):
-    if "v_normals" in geometry.vertex_metadata:
+    if "v_normal" in geometry.vertex_metadata:
         return
 
     if geometry.primitive_type != GL_TRIANGLES:

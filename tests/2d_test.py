@@ -1,10 +1,10 @@
 import gcraft as gc
 
 
-class Test2dRenderer(gc.core.GCraftRenderer):
+class Test2dRenderer(gc.core.GCraftApp):
 
     def __init__(self):
-        gc.core.GCraftRenderer.__init__(self)
+        gc.core.GCraftApp.__init__(self)
         self.resource_manager = None
         self.camera = None
         self.shader = None
@@ -17,7 +17,7 @@ class Test2dRenderer(gc.core.GCraftRenderer):
         self.test_buffer = None
 
     def on_init(self):
-        gc.core.GCraftRenderer.on_init(self)
+        gc.core.GCraftApp.on_init(self)
 
         self.resource_manager = gc.resources.ResourcesManager()
         self.camera = gc.scene.camera.Camera2d()

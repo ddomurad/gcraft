@@ -1,10 +1,10 @@
 import gcraft as gc
 
 
-class TestRenderer(gc.core.GCraftRenderer):
+class TestRenderer(gc.core.GCraftApp):
 
     def __init__(self):
-        gc.core.GCraftRenderer.__init__(self)
+        gc.core.GCraftApp.__init__(self)
         self.camera = None
         self.resource_manager = None
         self.grid_object = None
@@ -50,10 +50,10 @@ class TestRenderer(gc.core.GCraftRenderer):
         self.grid_object = gc.scene.SimpleMeshObject(grid_mesh, self.resource_manager.get(gc.resources.RT_SHADER_PROGRAM,
                                                                                          "default_basic"))
 
-        self.grid_object.material.difusse_color = [0.3, 0.3, 0.3, 1]
+        self.grid_object.material.diffuse_color = [0.3, 0.3, 0.3, 1]
 
         self.mesh_object = gc.scene.SimpleMeshObject(mesh, self.simple_lighting_shader)
-        self.mesh_object.material.difusse_color = [1.0, 1.0, 1.0, 1.0]
+        self.mesh_object.material.diffuse_color = [1.0, 1.0, 1.0, 1.0]
 
         self.mesh_object.textures.append(
             self.resource_manager.get(gc.resources.RT_TEXTURE,
@@ -116,7 +116,7 @@ class TestRenderer(gc.core.GCraftRenderer):
         print("fps: {0}, max: {1}[ms], avg: {2}[ms], min: {3}[ms]".format(fps, max_frame_time*1000,
                                                                           avg_frame_time*1000, min_frame_time*1000))
 
-        print("gl cals: {0}".format(gcraft.scene.utils.state_manager.get_gl_calls()))
+        print("gl cals: {0}".format(gc.utils.state_manager.get_gl_calls()))
 
 
-gc.application.glut.run((800,600), "trest", TestRenderer())
+gc.application.glut.run((800,600), b"trest", TestRenderer())

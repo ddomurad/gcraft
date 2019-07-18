@@ -117,6 +117,8 @@ def v3_transform_quaternion(q, v):
 
     return [x, y, z]
 
-
+def m4_dot_v3(m4, v3):
+    return m4.dot([v3[0], v3[1], v3[2], 1])
+    
 def m4_empty():
     return np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])

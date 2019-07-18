@@ -28,23 +28,30 @@ class DefaultMeshLoader(ResourceLoader):
         if r_id == "default_cube":
             mesh_size = params.get("size") or [1, 1, 1]
             texture_rect = params.get("texture_rect") or [[0, 0], [1, 1]]
-            return StaticMesh(r_id, generate_cube_geometry(mesh_size, texture_rect))
+            mesh_geometry = generate_cube_geometry(mesh_size, texture_rect)
+            if "mesh_ops" in params:
+                _apply_mesh_ops(mesh_geometry, params["mesh_ops"])
+            return StaticMesh(r_id, mesh_geometry)
         elif r_id == "default_cube_frame":
             mesh_size = params.get("size") or [1, 1, 1]
-            return StaticMesh(r_id, generate_cube_frame_geometry(mesh_size))
+            mesh_geometry = generate_cube_frame_geometry(mesh_size)
+            if "mesh_ops" in params:
+                _apply_mesh_ops(mesh_geometry, params["mesh_ops"])
+            return StaticMesh(r_id, mesh_geometry)
         elif r_id == "default_square":
             mesh_offset = params.get("offset") or [0, 0]
             mesh_size = params.get("size") or [1, 1]
             texture_rect = params.get("texture_rect") or [[0, 0], [1, 1]]
-
-            return StaticMesh(r_id, generate_square_geometry(mesh_offset, mesh_size, texture_rect))
+            mesh_geometry = generate_square_geometry(mesh_offset, mesh_size, texture_rect)
+            if "mesh_ops" in params:
+                _apply_mesh_ops(mesh_geometry, params["mesh_ops"])
+            return StaticMesh(r_id, mesh_geometry)
 
         return None
 
 
 class StlFileMeshLoader(FileResourceLoader):
     def can_load(self, r_id, r_type, params):
-
         return r_type == RT_MESH and FileResourceLoader.can_load_file(r_id, params, ".stl")
         # return r_type == RT_MESH and isinstance(r_id, str) and r_id.endswith(".stl") and path.exists(r_id)
 
@@ -74,8 +81,12 @@ class StlFileMeshLoader(FileResourceLoader):
 
                 stl_file.read(2)
 
-        return StaticMesh(r_id, MeshGeometry(GL_TRIANGLES, vertex_data, vertex_metadata, index_data,
-                                             len(vertex_data)/vertex_stride))
+        mesh_geometry = MeshGeometry(GL_TRIANGLES, vertex_data, vertex_metadata, index_data, len(vertex_data)/vertex_stride)
+        
+        if "mesh_ops" in params:
+            _apply_mesh_ops(mesh_geometry, params["mesh_ops"])
+
+        return StaticMesh(r_id, mesh_geometry)
 
     @staticmethod
     def remove_nan(v):

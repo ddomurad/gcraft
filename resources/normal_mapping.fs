@@ -3,7 +3,7 @@
 uniform vec3 light_dir;
 
 uniform float ambient_lighting;
-uniform vec4 difusse_color;
+uniform vec4 diffuse_color;
 uniform int textures_count;
 
 uniform sampler2D texture_0;
@@ -17,7 +17,7 @@ out vec4 frag_color;
 
 void main()
 {
-    vec4 final_diffuse = difusse_color;
+    vec4 final_diffuse = diffuse_color;
 
     if(textures_count > 0)
         final_diffuse *= texture2D(texture_0, fuv_0);

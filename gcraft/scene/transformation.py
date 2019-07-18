@@ -1,5 +1,6 @@
 from math import sin, cos
 import numpy as np
+from gcraft.utils.vector_ops import v3_add
 
 
 class Transformation:
@@ -13,6 +14,15 @@ class Transformation:
         self.scale_matrix = np.identity(4)
         self.transform_matrix = np.identity(4)
 
+    def get_pos(self):
+        return self._pos[:]
+    
+    def get_rot(self):
+        return self._rot[:]
+
+    def get_scale(self):
+        return self._scale[:]
+
     def set_pos(self, pos):
         self._pos[0] = pos[0]
         self._pos[1] = pos[1]
@@ -23,7 +33,11 @@ class Transformation:
         self.translation_matrix[3][2] = pos[2]
         self._update_transform_matrix()
 
+    def rotate(self, delta_rot):
+        self.set_rot(v3_add(self._rot, delta_rot))
+
     def set_rot(self, rot):
+
         self._rot[0] = rot[0]
         self._rot[1] = rot[1]
         self._rot[2] = rot[2]

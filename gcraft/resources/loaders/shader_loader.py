@@ -33,7 +33,7 @@ class DefaultShaderLoader(ResourceLoader):
                 """,
                 """
                     #version 330
-                    uniform vec4 difusse_color;
+                    uniform vec4 diffuse_color;
                     uniform int textures_count;
                     uniform sampler2D texture_0;
 
@@ -44,9 +44,9 @@ class DefaultShaderLoader(ResourceLoader):
                     void main() 
                     {   
                         if(textures_count == 0)
-                            frag_color = difusse_color;
+                            frag_color = diffuse_color;
                         else if(textures_count == 1)
-                            frag_color = texture2D(texture_0, fuv_0) *difusse_color; 
+                            frag_color = texture2D(texture_0, fuv_0) *diffuse_color; 
                     }
                 """)
 
@@ -55,7 +55,7 @@ class DefaultShaderLoader(ResourceLoader):
                     #version 330
                     uniform vec3 light_dir;
                     uniform mat4 projection_view_matrix;
-                    uniform mat4 normal_view_matrix;
+                    uniform mat4 transform_matrix;
 
                     in vec4 v_pos;
                     in vec4 v_normal;
@@ -66,7 +66,7 @@ class DefaultShaderLoader(ResourceLoader):
 
                     void main() 
                     {   
-                        vec3 t_normal = (normal_view_matrix*v_normal).xyz;
+                        vec3 t_normal = normalize((transform_matrix*v_normal).xyz);
                         flight = clamp(dot(t_normal, normalize(light_dir)*-1), 0.0, 1.0);
 
                         fuv_0 = uv_0;
@@ -76,7 +76,7 @@ class DefaultShaderLoader(ResourceLoader):
                 """
                     #version 330
                     uniform float ambient_lighting;
-                    uniform vec4 difusse_color;
+                    uniform vec4 diffuse_color;
                     uniform int textures_count;
           
                     uniform sampler2D texture_0;
@@ -87,7 +87,7 @@ class DefaultShaderLoader(ResourceLoader):
           
                     void main() 
                     {   
-                        vec4 final_diffuse = difusse_color;
+                        vec4 final_diffuse = diffuse_color;
           
                         if(textures_count > 0)
                             final_diffuse *= texture2D(texture_0, fuv_0);
