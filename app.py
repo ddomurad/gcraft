@@ -33,7 +33,7 @@ class TestScene(gc.core.GCraftScene):
         model_mesh = self.app.resource_manager.get(gc.resources.RT_MESH, 
             # "default_cube"
             # "C:\\tmp\\cracked_D12.stl"
-            "C:\\tmp\\Basilisk_Solid_Extra.stl"
+            "/home/work/Projects/ender/miniatures/trap_door/cut_stone_floor.2x2.trapdoor.stl"
             , {"mesh_ops": [apply_transform, gc.utils.geometry.mesh_ops.normalize_normals]}
             )
 
