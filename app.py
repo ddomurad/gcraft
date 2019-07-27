@@ -23,7 +23,7 @@ class TestScene(gc.core.GCraftScene):
         simple_lighting_shader.set_uniform_1f("ambient_lighting", 0.1)
         simple_lighting_shader.set_uniform_3f("light_dir", [0.0, -1.0, -1.0])
         
-        mesh_transformation = gc.scene.Transformation()
+        mesh_transformation = gc.utils.Transformation()
         mesh_transformation.set_rot([-3.14/2, 0, 0])
 
         def apply_transform(m):

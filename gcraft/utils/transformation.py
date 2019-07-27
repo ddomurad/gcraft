@@ -2,7 +2,6 @@ from math import sin, cos
 import numpy as np
 from gcraft.utils.vector_ops import v3_add
 
-
 class Transformation:
     def __init__(self):
         self._pos = [0, 0, 0]

@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 from gcraft.utils.geometry.mesh_geometry import MeshGeometry
-from gcraft.scene.transformation import Transformation
+from gcraft.utils.transformation import Transformation
 from gcraft.utils.vector_ops import *
 
 

@@ -3,7 +3,7 @@ from gcraft.resources.mesh import StaticMesh
 from gcraft.scene.scene_object import SceneObject
 from gcraft.scene.scene_object import Camera
 from gcraft.scene.material import Material, BasicMaterial
-from gcraft.scene.transformation import Transformation
+from gcraft.utils.transformation import Transformation
 from OpenGL.GL import  GL_ONE, GL_ZERO
 
 import gcraft.utils.state_manager as sm
